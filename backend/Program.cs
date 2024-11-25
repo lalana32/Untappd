@@ -6,7 +6,9 @@ using backend.Models;
 using backend.Services;
 using backend.Services.Auth;
 using backend.Services.Beers;
+using backend.Services.Comments;
 using backend.Services.Follower;
+using backend.Services.Likes;
 using backend.Services.Notifications;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +28,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFollowerService, FollowerService>();
 builder.Services.AddScoped<ICheckInService, CheckInService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 builder.Services.AddHttpContextAccessor();
@@ -107,31 +111,36 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
+// Middleware za HTTPS redirekciju
 app.UseHttpsRedirection();
-// app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173").SetIsOriginAllowed(origin => true).AllowCredentials());
 
-// Configure the HTTP request pipeline.
+// Swagger i Swagger UI (samo u razvojnom okruženju)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Omogućite CORS politiku
 app.UseCors("CorsPolicy");
 
-app.UseHttpsRedirection();
+// Dodajte routing
+app.UseRouting();
 
-app.UseAuthorization();
-app.UseAuthentication();
+// Uverite se da je Authentication middleware postavljen pre Authorization
+app.UseAuthentication();  // Autentifikacija
+app.UseAuthorization();   // Autorizacija
 
+// Mapiranje kontrolera
 app.MapControllers();
 
+// Omogućite statičke fajlove
 app.UseStaticFiles();
 
+// Kreirajte opseg za migracije i inicijalizaciju baze
 var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<DataContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-
 
 {
     try
@@ -145,4 +154,5 @@ var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     }
 }
 
+// Pokrenite aplikaciju
 app.Run();

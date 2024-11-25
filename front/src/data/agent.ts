@@ -23,6 +23,7 @@ const request = {
   },
 };
 
+// Beers API
 const Beers = {
   getAllBeers: (token?: string) => request.get('Beers', token),
   getBeerById: (id: number, token?: string) =>
@@ -34,6 +35,7 @@ const Beers = {
     request.delete(`Beers/${id}`, token),
 };
 
+// Auth API
 const Auth = {
   login: (values: any, token?: string) =>
     request.post('Auth/login', values, token),
@@ -44,6 +46,7 @@ const Auth = {
     request.get(`Auth/getUserById/${id}`, token),
 };
 
+// CheckIns API
 const CheckIns = {
   getAllCheckIns: (token?: string) => request.get('CheckIn', token),
   getCheckInById: (id: number, token?: string) =>
@@ -60,20 +63,18 @@ const CheckIns = {
     request.delete(`CheckIn/${id}`, token),
 };
 
+// Follower API
 const Follower = {
   getFollowers: (userId: string, token?: string) =>
     request.get(`Follower/followers/${userId}`, token),
-
   getFollowedUsers: (userId: string, token?: string) =>
     request.get(`Follower/followedUsers/${userId}`, token),
-
   followUser: (currentUserId: string, userToFollowId: string, token?: string) =>
     request.post(
       `Follower/follow?currentUserId=${currentUserId}&userToFollowId=${userToFollowId}`,
       {},
       token,
     ),
-
   unfollowUser: (
     currentUserId: string,
     userToUnfollowId: string,
@@ -83,7 +84,6 @@ const Follower = {
       `Follower/unfollow?currentUserId=${currentUserId}&userToUnfollowId=${userToUnfollowId}`,
       token,
     ),
-
   removeFollower: (
     currentUserId: string,
     userToRemoveId: string,
@@ -95,6 +95,7 @@ const Follower = {
     ),
 };
 
+// Notifications API
 const Notifications = {
   getUserNotifications: (userId: string, token?: string) =>
     request.get(`Notification/${userId}`, token),
@@ -104,11 +105,42 @@ const Notifications = {
     request.put(`Notification/${userId}`, userId, token),
 };
 
+// Likes API
+const Likes = {
+  getLikesByCheckInId: (checkInId: number, token?: string) =>
+    request.get(`Like/${checkInId}/getLikes`, token),
+  toggleLike: (checkinId: number, userId: string, token?: string) =>
+    request.post(`Like/toggle-like`, { checkinId, userId }, token), // Koristi query param
+  unlike: (checkInId: number, userId: string, token?: string) =>
+    request.post(`Like/${checkInId}/unlike?userId=${userId}`, {}, token), // Koristi query param
+  isLiked: (checkInId: number, userId: string, token?: string) =>
+    request.get(`Like/${checkInId}/isLiked?userId=${userId}`, token), // Koristi query param
+};
+
+const Comments = {
+  getCommentByCheckInId: (checkInId: number, token?: string) =>
+    request.get(`Comment/${checkInId}`, token),
+  addComment: (
+    checkInId: number,
+    text: string,
+    userId: string,
+    token?: string,
+  ) => request.post(`Comment/addComment`, { checkInId, text, userId }, token),
+  deleteComment: (commentId: number, userId: string, token?: string) =>
+    request.delete(
+      `Comment/deleteComment?commentId=${commentId}&userId=${userId}`,
+      token,
+    ),
+};
+
 const agent = {
   Beers,
   Auth,
   CheckIns,
   Follower,
   Notifications,
+  Likes,
+  Comments,
 };
+
 export default agent;

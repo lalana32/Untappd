@@ -37,13 +37,20 @@ namespace backend.Data
         .WithOne(c => c.User)
         .HasForeignKey(c => c.UserId)
         .OnDelete(DeleteBehavior.Cascade);
+
+        
 }
+
+   
 
         
 
         public DbSet<Beer> Beers { get; set; }
         public DbSet<CheckIn> CheckIns { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Comment> Comments {get; set;}
+       
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=store.db");

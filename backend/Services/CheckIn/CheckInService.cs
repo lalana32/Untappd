@@ -1,6 +1,7 @@
 using AutoMapper;
 using backend.Data;
 using backend.DTOs.CheckIn;
+using backend.DTOs.Comments;
 using backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,17 +24,21 @@ namespace backend.Services
             _userManager = userManager;
         }
 
-        public async Task<GetCheckInDTO> GetCheckInById(int id)
+        public async Task<GetCheckInDTO> GetCheckInById(int id, string currentUserId)
         {
             var checkIn = await _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
+                .Include(c => c.Likes)
+                .Include(c => c.Comments)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (checkIn == null)
             {
                 return null; // Handle not found case
             }
+
+            var isLikedByCurrentUser = checkIn.Likes.Any(like => like.UserId == currentUserId);
 
             return new GetCheckInDTO
             {
@@ -48,6 +53,17 @@ namespace backend.Services
                 LastName = checkIn.User.LastName,
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
+                Likes = checkIn.Likes,
+                IsLikedByCurrentUser = isLikedByCurrentUser,
+                Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+        {
+            Text = comment.Text,
+            UserId = comment.UserId,
+            CreatedAt = comment.CreatedAt,
+            CheckInId = comment.CheckInId,
+            Username = comment.User?.UserName ?? "Anonimno",
+        }).ToList(),
+
             };
         }
 
@@ -56,6 +72,9 @@ namespace backend.Services
             var checkIns = await _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
+                .Include(c => c.Likes)
+                .Include(c => c.Comments)
+                    .ThenInclude(comment => comment.User)
                 .ToListAsync();
 
             return checkIns.Select(checkIn => new GetCheckInDTO
@@ -71,6 +90,15 @@ namespace backend.Services
                 LastName = checkIn.User.LastName,
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
+                Likes = checkIn.Likes,
+                Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+        {
+            Text = comment.Text,
+            UserId = comment.UserId,
+            CreatedAt = comment.CreatedAt,
+            CheckInId = comment.CheckInId,
+            Username = comment.User?.UserName ?? "Anonimno",
+        }).ToList(),
             }).ToList();
         }
 
@@ -80,6 +108,9 @@ namespace backend.Services
             var checkIns = await _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
+                .Include(c => c.Likes)
+                .Include(c => c.Comments)
+                    .ThenInclude(comment => comment.User)
                 .Where(c => c.UserId == userId)
                 .ToListAsync();
 
@@ -97,48 +128,70 @@ namespace backend.Services
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
                 Country = checkIn.Beer.Country,
+                Likes = checkIn.Likes,
+                 Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+        {
+            Text = comment.Text,
+            UserId = comment.UserId,
+            CreatedAt = comment.CreatedAt,
+            CheckInId = comment.CheckInId,
+            Username = comment.User.UserName!,
+        }).ToList(),
             }).ToList();
         }
 
 
         public async Task<List<GetCheckInDTO>> GetFeedCheckIns(string currentUserId)
-    {
-        
-        var currentUser = await _userManager.Users
-                .Include(u => u.FollowedUsers)
-                .FirstOrDefaultAsync(u => u.Id == currentUserId);
-            if (currentUser == null)
-            {
-                throw new Exception("User not found");
-            }
-
-    
-         var followedUserIds = currentUser.FollowedUsers.Select(f => f.Id).ToList();
-        
-
-
-      
-        var checkIns = await _context.CheckIns
-        .Include(c => c.Beer)
-        .Include(c => c.User)
-        .Where(c => followedUserIds.Contains(c.UserId)) 
-        .ToListAsync();
-
-        return checkIns.Select(checkIn => new GetCheckInDTO
         {
-            Id = checkIn.Id,
-            BeerId = checkIn.BeerId,
-            BeerName = checkIn.Beer.Name,
-            Rating = checkIn.Rating,
-            Notes = checkIn.Notes,
-            Date = checkIn.Date,
-            UserId = checkIn.UserId,
-            FirstName = checkIn.User.FirstName,
-            LastName = checkIn.User.LastName,
-            BeerImageUrl = checkIn.Beer.ImageUrl,
-            Brewery = checkIn.Beer.Brewery,
-        }).ToList();
-    }
+        
+            var currentUser = await _userManager.Users
+                    .Include(u => u.FollowedUsers)
+                    .FirstOrDefaultAsync(u => u.Id == currentUserId);
+                if (currentUser == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+        
+            var followedUserIds = currentUser.FollowedUsers.Select(f => f.Id).ToList();
+            
+        
+
+        
+            var checkIns = await _context.CheckIns
+            .Include(c => c.Beer)
+            .Include(c => c.User)
+            .Include(c => c.Likes)
+            .Include(c => c.Comments)
+                .ThenInclude(comment => comment.User)
+            .Where(c => followedUserIds.Contains(c.UserId)) 
+            .ToListAsync();
+
+            return checkIns.Select(checkIn => new GetCheckInDTO
+            {
+                Id = checkIn.Id,
+                BeerId = checkIn.BeerId,
+                BeerName = checkIn.Beer.Name,
+                Rating = checkIn.Rating,
+                Notes = checkIn.Notes,
+                Date = checkIn.Date,
+                UserId = checkIn.UserId,
+                FirstName = checkIn.User.FirstName,
+                LastName = checkIn.User.LastName,
+                BeerImageUrl = checkIn.Beer.ImageUrl,
+                Brewery = checkIn.Beer.Brewery,
+                Likes = checkIn.Likes,
+                IsLikedByCurrentUser = checkIn.Likes.Any(like => like.UserId == currentUserId),
+               Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+        {
+            Text = comment.Text,
+            UserId = comment.UserId,
+            CreatedAt = comment.CreatedAt,
+            CheckInId = comment.CheckInId,
+            Username = comment.User.UserName!
+        }).ToList(),
+            }).ToList();
+        }
 
 
         
@@ -167,6 +220,7 @@ namespace backend.Services
             var checkIn = await _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
+                .Include(c => c.Likes)
                 .FirstOrDefaultAsync(c => c.Id == updateCheckinDTO.Id);
 
             if (checkIn == null)

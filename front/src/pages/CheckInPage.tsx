@@ -79,6 +79,9 @@ const CheckInPage = () => {
           value={rating}
           onChange={(e) => setRating(Number(e.target.value))}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          style={{
+            WebkitAppearance: 'none', // Uklanja default stil za WebKit pretraživače
+          }}
         />
         <div className="text-center mt-2">
           <span className="text-lg font-semibold text-gray-800 ">

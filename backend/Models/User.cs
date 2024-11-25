@@ -10,6 +10,9 @@ namespace backend.Models
         public virtual ICollection<User> FollowedUsers { get; set; } = new HashSet<User>();
         public virtual ICollection<User> Followers { get; set; } = new HashSet<User>();
         public virtual ICollection<CheckIn> CheckIns { get; set; } = new HashSet<CheckIn>();
+        public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
+
+        
        
     }
 }

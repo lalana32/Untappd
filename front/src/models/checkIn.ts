@@ -1,3 +1,5 @@
+import { Like } from './like';
+
 export interface CheckIn {
   id: number;
   beerId: number;
@@ -5,6 +7,14 @@ export interface CheckIn {
   notes: string;
   date: string;
   userId: string;
+}
+
+export interface CommentDTO {
+  text: string;
+  createdAt: Date;
+  checkInId: number;
+  userId: string;
+  username: string;
 }
 
 export interface CheckInDTO {
@@ -20,4 +30,7 @@ export interface CheckInDTO {
   beerImageUrl: string;
   brewery: string;
   country: string;
+  likes: Like[];
+  isLikedByCurrentUser: boolean;
+  comments: CommentDTO[];
 }

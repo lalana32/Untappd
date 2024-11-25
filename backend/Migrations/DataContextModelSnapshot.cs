@@ -45,13 +45,13 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3f8f740e-5cd5-4bd0-922f-935a8d0ba1cb",
+                            Id = "523fb942-1283-44e8-8e19-2796c19ec32a",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "83fa887b-fcfb-479b-b646-27fb64259c3b",
+                            Id = "da08e8b2-f24f-44b1-874d-0c5fd62329b9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -247,6 +247,55 @@ namespace backend.Migrations
                     b.ToTable("CheckIns");
                 });
 
+            modelBuilder.Entity("backend.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CheckInId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CheckInId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("backend.Models.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CheckInId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CheckInId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("backend.Models.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -435,6 +484,34 @@ namespace backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("backend.Models.Comment", b =>
+                {
+                    b.HasOne("backend.Models.CheckIn", "CheckIn")
+                        .WithMany("Comments")
+                        .HasForeignKey("CheckInId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CheckIn");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Models.Like", b =>
+                {
+                    b.HasOne("backend.Models.CheckIn", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("CheckInId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("backend.Models.Notification", b =>
                 {
                     b.HasOne("backend.Models.User", "User")
@@ -451,9 +528,18 @@ namespace backend.Migrations
                     b.Navigation("CheckIns");
                 });
 
+            modelBuilder.Entity("backend.Models.CheckIn", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("backend.Models.User", b =>
                 {
                     b.Navigation("CheckIns");
+
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

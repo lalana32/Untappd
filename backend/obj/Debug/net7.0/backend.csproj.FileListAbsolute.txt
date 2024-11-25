@@ -46,9 +46,6 @@ C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\ZstdSharp.dll
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\linux\native\libmongocrypt.so
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\osx\native\libmongocrypt.dylib
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\win\native\mongocrypt.dll
-C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\alpine-arm\native\libe_sqlite3.so
-C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\alpine-arm64\native\libe_sqlite3.so
-C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\alpine-x64\native\libe_sqlite3.so
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\browser-wasm\nativeassets\net7.0\e_sqlite3.a
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\linux-arm\native\libe_sqlite3.so
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\linux-arm64\native\libe_sqlite3.so
@@ -90,3 +87,6 @@ C:\Users\Korisnik\Desktop\Untappd\backend\obj\Debug\net7.0\backend.pdb
 C:\Users\Korisnik\Desktop\Untappd\backend\obj\Debug\net7.0\backend.genruntimeconfig.cache
 C:\Users\Korisnik\Desktop\Untappd\backend\obj\Debug\net7.0\ref\backend.dll
 C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\backend.staticwebassets.runtime.json
+C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\runtimes\linux-ppc64le\native\libe_sqlite3.so
+C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\Korisnik\Desktop\Untappd\backend\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll

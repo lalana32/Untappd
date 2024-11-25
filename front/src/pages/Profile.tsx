@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import Cover from '../../public/photos/cover-photo.jpg';
 import { useAppSelector } from '../configureStore';
 import { useEffect, useState } from 'react';
-import { CheckIn } from '../models/checkIn';
+import { CheckIn, CheckInDTO } from '../models/checkIn';
 import agent from '../data/agent';
 import { Follower } from '../models/follower';
 import UserNotLoggedIn from '../components/UserNotLoggedIn';
+import CheckInPost from '../components/CheckInPost';
 
 const Profile = () => {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
   const userId = user?.id;
 
-  const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
+  const [checkIns, setCheckIns] = useState<CheckInDTO[]>([]);
   const [followers, setFollowers] = useState<Follower[]>([]);
   const [followedUsers, setFollowedUsers] = useState<Follower[]>([]);
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
@@ -33,6 +34,36 @@ const Profile = () => {
 
     fetchCheckIns();
   }, [userId]);
+  console.log('cekinoviii', checkIns);
+
+  const toggleLike = async (checkIn: CheckInDTO) => {
+    try {
+      const response = await agent.Likes.toggleLike(checkIn.id, user?.id!);
+      setCheckIns((prevCheckIns) =>
+        prevCheckIns.map((item) =>
+          item.id === checkIn.id
+            ? {
+                ...item,
+                isLikedByCurrentUser: !item.isLikedByCurrentUser,
+                likes: item.isLikedByCurrentUser
+                  ? item.likes.filter((like) => like.userId !== user?.id!) // Ukloni "like"
+                  : [
+                      ...item.likes,
+                      {
+                        id: Date.now(),
+                        userId: user?.id!,
+                        checkInId: item.id,
+                      },
+                    ],
+              }
+            : item,
+        ),
+      );
+      console.log(response);
+    } catch (error) {
+      console.log('ne valja kume', error);
+    }
+  };
 
   useEffect(() => {
     const fetchFollowers = async () => {
@@ -171,7 +202,6 @@ const Profile = () => {
             </div>
           </div>
         </div>
-
         {isFollowersModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -222,7 +252,6 @@ const Profile = () => {
             </div>
           </div>
         )}
-
         {isFollowedUsersModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -273,6 +302,16 @@ const Profile = () => {
             </div>
           </div>
         )}
+        <div className="flex flex-col items-center space-y-20 p-8">
+          {checkIns.map((checkIn) => (
+            <CheckInPost
+              key={checkIn.id}
+              checkIn={checkIn}
+              toggleLike={toggleLike}
+            />
+          ))}
+        </div>
+        a
       </div>
     </>
   );

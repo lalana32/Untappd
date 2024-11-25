@@ -4,6 +4,7 @@ import { CheckInDTO } from '../../models/checkIn';
 import { useAppSelector } from '../../configureStore';
 import AddFriend from '../../../public/photos/add-friend.png';
 import UserNotLoggedIn from '../../components/UserNotLoggedIn';
+import CheckInPost from '../../components/CheckInPost';
 
 const Feed: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
@@ -27,6 +28,35 @@ const Feed: React.FC = () => {
 
     fetchCheckIns();
   }, []);
+
+  const toggleLike = async (checkIn: CheckInDTO) => {
+    try {
+      const response = await agent.Likes.toggleLike(checkIn.id, user?.id!);
+      setCheckIns((prevCheckIns) =>
+        prevCheckIns.map((item) =>
+          item.id === checkIn.id
+            ? {
+                ...item,
+                isLikedByCurrentUser: !item.isLikedByCurrentUser,
+                likes: item.isLikedByCurrentUser
+                  ? item.likes.filter((like) => like.userId !== user?.id!) // Ukloni "like"
+                  : [
+                      ...item.likes,
+                      {
+                        id: Date.now(),
+                        userId: user?.id!,
+                        checkInId: item.id,
+                      },
+                    ],
+              }
+            : item,
+        ),
+      );
+      console.log(response);
+    } catch (error) {
+      console.log('ne valja kume', error);
+    }
+  };
 
   if (!user) return <UserNotLoggedIn />;
 
@@ -55,40 +85,13 @@ const Feed: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center space-y-50 p-8">
+      <div className="flex flex-col items-center space-y-20 p-8">
         {checkIns.map((checkIn) => (
-          <div
+          <CheckInPost
             key={checkIn.id}
-            className="w-full max-w-3xl rounded-lg shadow-lg overflow-hidden border border-gray-300 bg-white dark:bg-boxdark transform transition duration-500 hover:scale-105"
-          >
-            <div className="px-8 py-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-              <h2 className="text-3xl font-bold">
-                {checkIn.firstName.charAt(0).toUpperCase() +
-                  checkIn.firstName.slice(1).toLowerCase() || 'Anonimno'}{' '}
-                {checkIn.lastName.charAt(0).toUpperCase() +
-                  checkIn.lastName.slice(1).toLowerCase() || 'Korisnik'}{' '}
-                is drinking {checkIn.beerName}
-              </h2>
-              <p className="text-md mt-2">
-                {new Date(checkIn.date).toLocaleDateString('hr-HR')}
-              </p>
-            </div>
-
-            <div className="h-72 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
-              <img
-                src={checkIn.beerImageUrl}
-                alt={checkIn.beerName}
-                className="contained max-h-72"
-              />
-            </div>
-
-            <div className="px-8 py-6">
-              <div className="border-2 border-blue-500 text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-400 rounded-lg p-4 text-center">
-                Rating: <span className="font-semibold">{checkIn.rating}</span>
-                /5
-              </div>
-            </div>
-          </div>
+            checkIn={checkIn}
+            toggleLike={toggleLike}
+          />
         ))}
       </div>
     </>

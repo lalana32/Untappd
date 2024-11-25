@@ -11,5 +11,7 @@ namespace backend.Models
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string UserId { get; set; }
         public virtual User User { get; set; }
+        public ICollection<Like> Likes { get; set; }
+        public ICollection<Comment> Comments {get; set;}
     }
 }

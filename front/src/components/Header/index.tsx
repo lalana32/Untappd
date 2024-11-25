@@ -5,6 +5,7 @@ import DropdownUser from './DropdownUser';
 import { useEffect, useState } from 'react';
 import agent from '../../data/agent';
 import { User } from '../../models/user';
+import { useAppSelector } from '../../configureStore';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -14,6 +15,7 @@ const Header = (props: {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+  const currentUser = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -126,7 +128,10 @@ const Header = (props: {
                 value={searchTerm}
                 onChange={handleSearchChange}
                 placeholder="Type to search..."
-                className="w-full bg-transparent pl-9 pr-4 text-black focus:outline-none dark:text-white xl:w-125"
+                className={`w-full bg-transparent pl-9 pr-4 text-black focus:outline-none dark:text-white xl:w-125
+                 ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={!currentUser}
+                title={!currentUser ? 'You are not logged in' : ''}
               />
               {searchTerm && (
                 <div className="absolute left-0 top-full mt-2 w-full bg-white border border-gray-200 shadow-lg dark:bg-boxdark dark:border-strokedark">

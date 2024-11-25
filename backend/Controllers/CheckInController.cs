@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.DTOs.CheckIn;
 using backend.Services;
+using System.Security.Claims;
+
 
 namespace backend.Controllers
 {
@@ -18,7 +20,8 @@ namespace backend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCheckIn(int id)
         {
-            var checkIn = await _checkInService.GetCheckInById(id);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var checkIn = await _checkInService.GetCheckInById(id, currentUserId);
             if (checkIn == null)
             {
                 return NotFound();
