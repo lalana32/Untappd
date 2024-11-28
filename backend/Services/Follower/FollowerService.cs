@@ -40,7 +40,9 @@ namespace backend.Services.Follower
                 UserId = userToFollow.Id, 
                 Message = $"{currentUser.UserName} started following you", 
                 IsRead = false, 
-                CreatedAt = DateTime.UtcNow 
+                CreatedAt = DateTime.UtcNow,
+                InteractingUserId = currentUserId,
+                Type = NotificationType.Follow
             };
 
             _context.Notifications.Add(notification);

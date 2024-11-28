@@ -27,6 +27,15 @@ namespace backend.Services.Likes
 
        public async Task<bool> ToggleLike(int checkInId, string userId)
        {   
+
+            var currentUser = await _context.Users.FindAsync(userId);
+            
+
+            var checkIn = await _context.CheckIns.FirstOrDefaultAsync(c => c.Id == checkInId);
+            if (checkIn == null) return false;
+
+            var checkInUserId = checkIn.UserId;
+
             var like = await _context.Likes.FirstOrDefaultAsync(l => l.CheckInId == checkInId && l.UserId == userId);
 
             if (like != null)
@@ -38,6 +47,17 @@ namespace backend.Services.Likes
             else
             {
                 var newLike = new Like { CheckInId = checkInId, UserId = userId };
+                var notification = new Notification 
+                {
+                    UserId = checkInUserId,
+                    Message = $"{currentUser!.UserName} liked your check in", 
+                    IsRead = false, 
+                    CreatedAt = DateTime.UtcNow,
+                    InteractingUserId = currentUser.Id,
+                    Type = NotificationType.Like,
+                    PostId = checkInId
+                };
+                _context.Notifications.Add(notification);
                 _context.Likes.Add(newLike);
                 await _context.SaveChangesAsync();
                 return true;

@@ -29,6 +29,9 @@ namespace backend.Services.Notifications
                 Message = n.Message,
                 IsRead = n.IsRead,
                 CreatedAt = n.CreatedAt,
+                InteractingUserId = n.InteractingUserId,
+                PostId = n.PostId,
+                Type = n.Type
             })
             .ToListAsync();
 

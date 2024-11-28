@@ -10,6 +10,7 @@ export interface CheckIn {
 }
 
 export interface CommentDTO {
+  id: number;
   text: string;
   createdAt: Date;
   checkInId: number;

@@ -5,12 +5,13 @@ import { useAppSelector } from '../configureStore';
 
 interface CheckInPostProps {
   toggleLike: (checkIn: CheckInDTO) => void;
-  checkIn: CheckInDTO; // Prop za funkciju toggleLike
+  checkIn: CheckInDTO;
 }
 
 const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
   const [showComments, setShowComments] = useState(false);
   const [text, setText] = useState('');
+  const [comments, setComments] = useState(checkIn.comments || []);
   const user = useAppSelector((state) => state.auth.user);
 
   const toggleComments = () => {
@@ -29,13 +30,13 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
     try {
       // Poziv API-a
       const response = await agent.Comments.addComment(checkInId, text, userId);
-
+      console.log(response);
       // Ažuriranje lokalnog niza komentara
       const newComment: CommentDTO = {
-        // Pretpostavimo da API vraća ID
+        id: response.id,
         text: response.text,
         username: user?.userName || 'Anonimno',
-        createdAt: new Date(), // Ako API ne vraća vreme kreiranja, dodajte lokalno
+        createdAt: new Date(),
         userId: userId,
         checkInId: checkInId,
       };
@@ -43,7 +44,6 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
       const updatedComments = [...checkIn.comments, newComment];
       checkIn.comments = updatedComments;
 
-      // Resetovanje inputa
       setText('');
     } catch (error) {
       console.error('Greška pri dodavanju komentara', error);
@@ -52,10 +52,17 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
 
   const handleDelete = async (commentId: number, userId: string) => {
     try {
-      const response = await agent.Comments.deleteComment(commentId, userId);
-      console.log(response);
+      setComments((prevComments) => {
+        const updatedComments = prevComments.filter(
+          (comment) => comment.id !== commentId,
+        );
+        checkIn.comments = updatedComments;
+        return updatedComments;
+      });
+
+      await agent.Comments.deleteComment(commentId, userId);
     } catch (error) {
-      console.log('error prilikom brisanja', error);
+      console.log('Greška prilikom brisanja', error);
     }
   };
 
@@ -119,9 +126,7 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
         />
         <button
           className="mt-2 px-6 py-2 bg-black text-white rounded-lg shadow-md hover:bg-gray-700 transition-all duration-300"
-          onClick={() =>
-            addComment(checkIn.id, text, 'a30b6343-77b9-4c45-91fd-88a356399a3c')
-          }
+          onClick={() => addComment(checkIn.id, text, user?.id!)}
         >
           Add Comment
         </button>
@@ -157,7 +162,7 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
                   <button
                     className="text-red-500 hover:text-red-700 ml-4"
                     title="Delete comment"
-                    // onClick={() => handleDelete(comment.)}
+                    onClick={() => handleDelete(comment.id, user.id)}
                   >
                     🗑️
                   </button>

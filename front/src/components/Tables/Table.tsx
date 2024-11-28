@@ -13,13 +13,30 @@ const Table = () => {
   const userId = user?.id;
   const [checkIns, setCheckIns] = useState<CheckInDTO[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allCountries, setAllCountries] = useState<string[]>([]);
+  const [countries, setCountries] = useState<string[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [sort, setSort] = useState<string>('');
   useEffect(() => {
     const fetchCheckIns = async () => {
       try {
-        // Zamenite URL sa stvarnim URL-om vašeg API-ja
-        const response = await agent.CheckIns.getCheckInsByUserId(userId!);
+        const response = await agent.CheckIns.getCheckInsByUserId(
+          user?.id!,
+          sort,
+          selectedCountry,
+        );
+        const checkIns = response as CheckInDTO[];
+        setCheckIns(checkIns);
 
-        setCheckIns(response);
+        // Izvuci sve države iz podataka (samo jednom)
+        if (allCountries.length === 0) {
+          const countries = checkIns.map(
+            (checkIn: CheckInDTO) => checkIn.country,
+          );
+          const uniqueCountries = [...new Set(countries)];
+          setAllCountries(uniqueCountries); // Svi dostupni
+          setCountries(uniqueCountries); // Inicijalno stanje za dropdown
+        }
       } catch (error) {
         console.error('Error fetching check-ins:', error);
       } finally {
@@ -28,9 +45,18 @@ const Table = () => {
     };
 
     fetchCheckIns();
-  }, [userId]);
+  }, [userId, selectedCountry, sort]);
 
-  console.log(checkIns);
+  const handleFilterChange = (selected: string) => {
+    setSelectedCountry(selected);
+    if (selected === '') {
+      setCountries(allCountries); // Vrati sve opcije kada je prazno
+    }
+  };
+
+  const handleSortChange = (selected: string) => {
+    setSort(selected);
+  };
 
   if (!user) return <UserNotLoggedIn />;
 
@@ -71,6 +97,54 @@ const Table = () => {
         </h4>
       </div>
 
+      {/* Sort and Filter section */}
+      <div className="flex justify-between border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:px-6 2xl:px-7.5">
+        {/* Sort By */}
+        <div className="flex items-center">
+          <label
+            htmlFor="sort"
+            className="font-medium text-black dark:text-white"
+          >
+            Sort By:
+          </label>
+          <select
+            id="sort"
+            className="ml-2 p-2 rounded border border-stroke dark:border-strokedark dark:bg-boxdark dark:text-white"
+            value={sort}
+            onChange={(e) => handleSortChange(e.target.value)}
+          >
+            <option value="date_desc">Date (Newest)</option>
+            <option value="date_asc">Date (Oldest)</option>
+            <option value="rating_desc">Rating (Highest)</option>
+            <option value="rating_asc">Rating (Lowest)</option>
+          </select>
+        </div>
+
+        {/* Filter By Country */}
+        <div className="flex items-center">
+          <label
+            htmlFor="country"
+            className="font-medium text-black dark:text-white"
+          >
+            Filter By Country:
+          </label>
+          <select
+            id="country"
+            className="ml-2 p-2 rounded border border-stroke dark:border-strokedark dark:bg-boxdark dark:text-white"
+            value={selectedCountry}
+            onChange={(e) => handleFilterChange(e.target.value)}
+          >
+            <option value="">All Countries</option>
+            {countries.map((country, index) => (
+              <option key={index} value={`${country}`}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Check-ins list */}
       <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
         <div className="col-span-3 flex items-center">
           <p className="font-medium">Beer</p>

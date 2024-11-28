@@ -38,9 +38,9 @@ namespace backend.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetCheckInsByUserId(string userId)
+        public async Task<IActionResult> GetCheckInsByUserId(string userId, string sort = "date_desc", string country = null)
         {
-            var checkIns = await _checkInService.GetCheckInsByUserId(userId);
+            var checkIns = await _checkInService.GetCheckInsByUserId(userId, sort, country);
             return Ok(checkIns);
         }
 

@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import agent from '../../data/agent';
 import { useAppSelector } from '../../configureStore';
-import { Notification } from '../../models/notification';
+import { Notification, NotificationType } from '../../models/notification';
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifying, setNotifying] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const user = useAppSelector((state) => state.auth.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -49,6 +50,33 @@ const DropdownNotification = () => {
       }
     } catch (error) {
       console.error('Failed to mark notifications as read:', error);
+    }
+  };
+
+  const handleNotificationClick = async (notification: Notification) => {
+    switch (notification.type) {
+      case NotificationType.Follow:
+        console.log(`User ${notification.interactingUserId} followed you.`);
+        navigate(`/users/${notification.interactingUserId}`);
+        break;
+
+      case NotificationType.Like:
+        console.log(
+          `User ${notification.interactingUserId} liked your post with ID ${notification.postId}`,
+        );
+
+        break;
+
+      case NotificationType.Comment:
+        console.log(
+          `User ${notification.interactingUserId} commented on your post with ID ${notification.postId}`,
+        );
+
+        break;
+
+      default:
+        console.log('Unknown notification type');
+        break;
     }
   };
 
@@ -103,21 +131,20 @@ const DropdownNotification = () => {
               ) : (
                 notifications.map((notification: Notification) => (
                   <li key={notification.id}>
-                    <Link
-                      className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                      to="#"
+                    <div
+                      className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 cursor-pointer"
+                      onClick={() => handleNotificationClick(notification)}
                     >
                       <p className="text-sm">
                         <span className="text-black dark:text-white">
                           New notification:{' '}
-                        </span>{' '}
+                        </span>
                         {notification.message}
                       </p>
-
                       <p className="text-xs">
                         {new Date(notification.createdAt).toLocaleDateString()}
                       </p>
-                    </Link>
+                    </div>
                   </li>
                 ))
               )}

@@ -93,6 +93,7 @@ namespace backend.Services
                 Likes = checkIn.Likes,
                 Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
+            Id = comment.Id,
             Text = comment.Text,
             UserId = comment.UserId,
             CreatedAt = comment.CreatedAt,
@@ -103,16 +104,34 @@ namespace backend.Services
         }
 
 
-        public async Task<List<GetCheckInDTO>> GetCheckInsByUserId(string userId)
+        public async Task<List<GetCheckInDTO>> GetCheckInsByUserId(string userId, string sort = "date_desc", string country = null)
         {
-            var checkIns = await _context.CheckIns
+            IQueryable<CheckIn> query =  _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
                 .Include(c => c.Likes)
                 .Include(c => c.Comments)
                     .ThenInclude(comment => comment.User)
                 .Where(c => c.UserId == userId)
-                .ToListAsync();
+                .OrderByDescending(c => c.Date);
+
+            if (!string.IsNullOrEmpty(country))
+            {
+                query = query.Where(c => c.Beer.Country == country);
+            }
+              
+            query = sort switch
+            {
+                "date_desc" => query.OrderByDescending(c => c.Date),
+                "date_asc" => query.OrderBy(c => c.Date),
+                "rating_desc" => query.OrderByDescending(c => (double)c.Rating), // Cast Rating to double
+                "rating_asc" => query.OrderBy(c => (double)c.Rating), // Cast Rating to double
+                _ => query.OrderByDescending(c => c.Date)  // Default sorting
+            };
+
+        var checkIns = await query.ToListAsync();
+
+
 
              return checkIns.Select(checkIn => new GetCheckInDTO
             {
@@ -131,6 +150,7 @@ namespace backend.Services
                 Likes = checkIn.Likes,
                  Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
+            Id = comment.Id,
             Text = comment.Text,
             UserId = comment.UserId,
             CreatedAt = comment.CreatedAt,
@@ -165,6 +185,7 @@ namespace backend.Services
             .Include(c => c.Comments)
                 .ThenInclude(comment => comment.User)
             .Where(c => followedUserIds.Contains(c.UserId)) 
+            .OrderByDescending(c => c.Date)
             .ToListAsync();
 
             return checkIns.Select(checkIn => new GetCheckInDTO
@@ -184,6 +205,7 @@ namespace backend.Services
                 IsLikedByCurrentUser = checkIn.Likes.Any(like => like.UserId == currentUserId),
                Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
+            Id = comment.Id,
             Text = comment.Text,
             UserId = comment.UserId,
             CreatedAt = comment.CreatedAt,

@@ -26,6 +26,22 @@ namespace backend.Services.Comments
     {
         throw new Exception("CheckIn not found.");
     }
+    var userToNotify = await _context.Users.FirstOrDefaultAsync(u => u.CheckIns.Contains(checkIn));
+    var userCommented = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.UserId);
+
+    var notification = new Notification
+    {
+        UserId = userToNotify.Id,
+        Message = $"{userCommented!.UserName} commented your post", 
+        IsRead = false, 
+        CreatedAt = DateTime.UtcNow,
+        InteractingUserId = dto.UserId,
+        PostId = checkIn.Id,
+        Type = NotificationType.Comment
+    };
+
+
+    
 
     var comment = new Comment
     {
@@ -36,6 +52,7 @@ namespace backend.Services.Comments
     };
 
     _context.Comments.Add(comment);
+    _context.Notifications.Add(notification);
     await _context.SaveChangesAsync();
 
     return comment;
@@ -44,19 +61,20 @@ namespace backend.Services.Comments
 
 
   
-    public async Task<bool> DeleteCommentAsync(int commentId, string userId)
+    public async Task<List<Comment>> DeleteCommentAsync(int commentId, string userId)
     {
         var comment = await _context.Comments
             .FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == userId);
 
         if (comment == null)
         {
-            return false;
+            throw new Exception("comment doesnt exist");
         }
 
         _context.Comments.Remove(comment);
         await _context.SaveChangesAsync();
-        return true;
+        var commentList = await _context.Comments.ToListAsync();
+        return commentList;
     }
 
    

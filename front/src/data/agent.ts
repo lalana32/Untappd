@@ -51,8 +51,18 @@ const CheckIns = {
   getAllCheckIns: (token?: string) => request.get('CheckIn', token),
   getCheckInById: (id: number, token?: string) =>
     request.get(`CheckIn/${id}`, token),
-  getCheckInsByUserId: (userId: string, token?: string) =>
-    request.get(`CheckIn/user/${userId}`, token),
+  getCheckInsByUserId: (
+    userId: string,
+    sort = 'date_desc',
+    country?: string,
+    token?: string,
+  ) =>
+    request.get(
+      `CheckIn/user/${userId}?sort=${sort}${
+        country ? `&country=${country}` : ''
+      }`,
+      token,
+    ),
   getCheckInFeed: (userId: string, token?: string) =>
     request.get(`CheckIn/feed/${userId}`, token),
   createCheckIn: (checkIn: any, token?: string) =>

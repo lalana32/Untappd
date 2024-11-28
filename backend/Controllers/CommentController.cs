@@ -50,18 +50,13 @@ namespace backend.Controllers
        
         [HttpDelete("deleteComment")]
        
-        public async Task<ActionResult> DeleteComment(int commentId, string userId)
+        public async Task<ActionResult<List<Comment>>> DeleteComment(int commentId, string userId)
         {
            
 
-            bool isDeleted = await _commentService.DeleteCommentAsync(commentId, userId);
+            var deletedComment = await _commentService.DeleteCommentAsync(commentId, userId);
 
-            if (!isDeleted)
-            {
-                return NotFound("Comment not found or you don't have permission to delete it.");
-            }
-
-            return NoContent(); 
+            return Ok(deletedComment); 
         }
 
        
