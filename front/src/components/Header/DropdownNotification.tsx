@@ -58,12 +58,17 @@ const DropdownNotification = () => {
       case NotificationType.Follow:
         console.log(`User ${notification.interactingUserId} followed you.`);
         navigate(`/users/${notification.interactingUserId}`);
+        setDropdownOpen(false);
         break;
 
       case NotificationType.Like:
         console.log(
           `User ${notification.interactingUserId} liked your post with ID ${notification.postId}`,
         );
+        navigate('/profile', {
+          state: { targetId: notification.postId },
+        });
+        setDropdownOpen(false);
 
         break;
 
@@ -71,6 +76,10 @@ const DropdownNotification = () => {
         console.log(
           `User ${notification.interactingUserId} commented on your post with ID ${notification.postId}`,
         );
+        navigate('/profile', {
+          state: { targetId: notification.postId },
+        });
+        setDropdownOpen(false);
 
         break;
 

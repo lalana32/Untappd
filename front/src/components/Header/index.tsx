@@ -127,11 +127,16 @@ const Header = (props: {
                 type="text"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                placeholder="Type to search..."
+                placeholder="Search for users..."
                 className={`w-full bg-transparent pl-9 pr-4 text-black focus:outline-none dark:text-white xl:w-125
                  ${!currentUser ? 'opacity-50 cursor-not-allowed' : ''}`}
                 disabled={!currentUser}
                 title={!currentUser ? 'You are not logged in' : ''}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
               />
               {searchTerm && (
                 <div className="absolute left-0 top-full mt-2 w-full bg-white border border-gray-200 shadow-lg dark:bg-boxdark dark:border-strokedark">

@@ -164,7 +164,11 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
                     title="Delete comment"
                     onClick={() => handleDelete(comment.id, user.id)}
                   >
-                    🗑️
+                    <img
+                      src="photos/recycle-bin.png"
+                      alt="recycle-bin"
+                      style={{ width: '30px', height: 'auto' }}
+                    />
                   </button>
                 )}
               </div>

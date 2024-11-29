@@ -2,27 +2,28 @@ import React, { useEffect, useState } from 'react';
 import agent from '../../data/agent';
 import { CheckInDTO } from '../../models/checkIn';
 import { useAppSelector } from '../../configureStore';
-import AddFriend from '../../../public/photos/add-friend.png';
 import UserNotLoggedIn from '../../components/UserNotLoggedIn';
 import CheckInPost from '../../components/CheckInPost';
 
 const Feed: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
   const [checkIns, setCheckIns] = useState<CheckInDTO[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCheckIns = async () => {
       if (!user) return;
       try {
+        setLoading(true);
         const response = await agent.CheckIns.getCheckInFeed(
           user?.id!,
           user?.token,
         );
-
         setCheckIns(response);
       } catch (error) {
         console.error('Error fetching check-ins:', error);
       } finally {
+        setLoading(false);
       }
     };
 
@@ -68,17 +69,10 @@ const Feed: React.FC = () => {
             Your Feed is Empty
           </h1>
           <p className="text-lg text-gray-600 mb-6">
-            It looks like you're not following anyone yet.
+            It looks like your feed is empty right now. Start following people
+            to see their posts, or wait for the ones you follow to share
+            something.
           </p>
-
-          {/* Add Friend Image */}
-          <div className="flex items-center justify-center mb-6">
-            <img
-              src={AddFriend}
-              alt="Add friend"
-              className="w-34 h-34 rounded-full border-4 border-gray-300 shadow-lg"
-            />
-          </div>
         </div>
       </div>
     );

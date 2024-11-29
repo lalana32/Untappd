@@ -15,7 +15,7 @@ const SignIn: React.FC = () => {
   const logInSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
     const response = await dispatch(userLogin(data));
     console.log(response);
-    navigate('/');
+    navigate('/beers');
   };
   return (
     <>

@@ -1,8 +1,8 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cover from '../../public/photos/cover-photo.jpg';
 import { useAppSelector } from '../configureStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CheckIn, CheckInDTO } from '../models/checkIn';
 import agent from '../data/agent';
 import { Follower } from '../models/follower';
@@ -13,6 +13,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
   const userId = user?.id;
+  const location = useLocation();
+  const { targetId } = location.state || {};
 
   const [checkIns, setCheckIns] = useState<CheckInDTO[]>([]);
   const [followers, setFollowers] = useState<Follower[]>([]);
@@ -20,6 +22,21 @@ const Profile = () => {
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowedUsersModalOpen, setIsFollowedUsersModalOpen] =
     useState(false);
+
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    // Dodavanje malog kašnjenja da se referenci popune
+    if (targetId && cardRefs.current[targetId]) {
+      setTimeout(() => {
+        cardRefs.current[targetId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 100); // Kašnjenje od 100ms
+    }
+  }, [targetId, checkIns]);
+
   useEffect(() => {
     const fetchCheckIns = async () => {
       if (!user) return;
@@ -34,7 +51,6 @@ const Profile = () => {
 
     fetchCheckIns();
   }, [userId]);
-  console.log('cekinoviii', checkIns);
 
   const toggleLike = async (checkIn: CheckInDTO) => {
     try {
@@ -46,7 +62,7 @@ const Profile = () => {
                 ...item,
                 isLikedByCurrentUser: !item.isLikedByCurrentUser,
                 likes: item.isLikedByCurrentUser
-                  ? item.likes.filter((like) => like.userId !== user?.id!) // Ukloni "like"
+                  ? item.likes.filter((like) => like.userId !== user?.id!)
                   : [
                       ...item.likes,
                       {
@@ -304,14 +320,14 @@ const Profile = () => {
         )}
         <div className="flex flex-col items-center space-y-20 p-8">
           {checkIns.map((checkIn) => (
-            <CheckInPost
+            <div
               key={checkIn.id}
-              checkIn={checkIn}
-              toggleLike={toggleLike}
-            />
+              ref={(el) => (cardRefs.current[checkIn.id] = el)}
+            >
+              <CheckInPost checkIn={checkIn} toggleLike={toggleLike} />
+            </div>
           ))}
         </div>
-        a
       </div>
     </>
   );
