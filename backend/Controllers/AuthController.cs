@@ -8,7 +8,7 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-         private readonly IAuthService _authService;
+        private readonly IAuthService _authService;
 
         public AuthController(IAuthService authService)
         {
@@ -16,13 +16,23 @@ namespace backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTO>> Login(LoginUserDTO loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO loginDto)
         {
-            var user = await _authService.Login(loginDto);
-            if (user == null) return Unauthorized("Invalid username or password");
-
-            return Ok(user);
+            try
+            {
+                var user = await _authService.Login(loginDto);
+                return Ok(user); 
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An error occurred. Please try again." });
+            }
         }
+
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDTO>> Register([FromForm] RegisterUserDTO registerDto)
@@ -49,5 +59,28 @@ namespace backend.Controllers
         }
 
 
+         [HttpGet("getCurrentUser")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            try
+            {
+                var userDto = await _authService.GetCurrentUser();
+                return Ok(userDto);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
+
+
     }
+}

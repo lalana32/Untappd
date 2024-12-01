@@ -21,7 +21,7 @@ namespace backend.Controllers
         public async Task<IActionResult> GetCheckIn(int id)
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var checkIn = await _checkInService.GetCheckInById(id, currentUserId);
+            var checkIn = await _checkInService.GetCheckInById(id, currentUserId!);
             if (checkIn == null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetCheckInsByUserId(string userId, string sort = "date_desc", string country = null)
+        public async Task<IActionResult> GetCheckInsByUserId(string userId, string sort = "date_desc", string country = null!)
         {
             var checkIns = await _checkInService.GetCheckInsByUserId(userId, sort, country);
             return Ok(checkIns);

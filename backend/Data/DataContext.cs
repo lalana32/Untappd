@@ -16,35 +16,30 @@ namespace backend.Data
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
-{
-    base.OnModelCreating(builder);
+        {
+            base.OnModelCreating(builder);
 
-    builder.Entity<IdentityRole>()
-        .HasData(
-            new IdentityRole { Name = "Member", NormalizedName = "MEMBER" },
-            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" }
-        );
+            builder.Entity<IdentityRole>()
+                .HasData(
+                    new IdentityRole { Name = "Member", NormalizedName = "MEMBER" },
+                    new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" }
+                );
 
-    builder.Entity<CheckIn>()
-        .HasOne(c => c.User)
-        .WithMany(u => u.CheckIns)
-        .HasForeignKey(c => c.UserId)
-        .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<CheckIn>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.CheckIns)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
-    builder.Entity<User>()
-        .HasMany(u => u.CheckIns)
-        .WithOne(c => c.User)
-        .HasForeignKey(c => c.UserId)
-        .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<User>()
+                .HasMany(u => u.CheckIns)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-        
-}
-
-   
-
-        
-
+                
+        }
         public DbSet<Beer> Beers { get; set; }
         public DbSet<CheckIn> CheckIns { get; set; }
         public DbSet<Notification> Notifications { get; set; }
@@ -57,5 +52,5 @@ namespace backend.Data
 
        
     }
-    }
+}
 

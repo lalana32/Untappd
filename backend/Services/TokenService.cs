@@ -1,54 +1,56 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using backend.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace backend.Services
+public class TokenService
 {
-    public class TokenService
+    private readonly SymmetricSecurityKey _key;
+
+    public TokenService(IConfiguration config)
     {
-        private readonly SymmetricSecurityKey _key;
+        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]!));
+    }
 
-        public TokenService(IConfiguration config)
+    public string CreateToken(User user, IList<string> roles)
+    {
+        var claims = new List<Claim>
         {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+            new Claim(JwtRegisteredClaimNames.NameId, user.Id),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName!)
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        public string CreateToken(User user, IList<string> roles)
+        var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
-            };
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.Now.AddDays(7), 
+            SigningCredentials = creds
+        };
 
-            // Dodavanje uloga kao claimova
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+        var tokenHandler = new JwtSecurityTokenHandler();
 
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7), // Trajanje tokena
-                SigningCredentials = creds
-            };
+        return tokenHandler.WriteToken(token);
+    }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+    public string GetUserIdFromToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+        if (jwtToken == null)
+            return null!;
 
-            return tokenHandler.WriteToken(token);
-        }
-
-
-   
+        var userId = jwtToken?.Claims?.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId)?.Value;
+        return userId!;
     }
 }

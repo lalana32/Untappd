@@ -6,7 +6,13 @@ import BeerGif from '../../images/beer.gif';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp: React.FC = () => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const navigate = useNavigate();
 
@@ -14,29 +20,41 @@ const SignUp: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setProfilePicture(file);
+      clearErrors('ProfilePicture');
     }
   };
 
   const onSubmit = async (data: any) => {
-    const formData = new FormData();
+    if (!profilePicture) {
+      setError('ProfilePicture', {
+        type: 'manual',
+        message: 'Please upload a profile picture',
+      });
+      return;
+    }
 
-    // Dodajte ostale podatke iz forme
+    const formData = new FormData();
     formData.append('firstName', data.FirstName);
     formData.append('lastName', data.LastName);
     formData.append('userName', data.UserName);
     formData.append('password', data.Password);
     formData.append('email', data.Email);
-
-    if (profilePicture) {
-      formData.append('profilePicture', profilePicture);
-    }
+    formData.append('profilePicture', profilePicture);
 
     try {
       await agent.Auth.register(formData);
       navigate('/auth/signin');
       window.location.reload();
-    } catch (error) {
-      console.log('ne valja kume: ', error);
+    } catch (error: any) {
+      if (error?.response?.data?.errors) {
+        const apiErrors = error.response.data.errors;
+        Object.keys(apiErrors).forEach((key) => {
+          setError(key, { type: 'manual', message: apiErrors[key] });
+        });
+        console.log(errors);
+      } else {
+        console.log('Error: ', error);
+      }
     }
   };
 
@@ -58,6 +76,7 @@ const SignUp: React.FC = () => {
               </h2>
 
               <form onSubmit={handleSubmit(onSubmit)}>
+                {/* First Name */}
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     First name
@@ -67,6 +86,13 @@ const SignUp: React.FC = () => {
                       name="FirstName"
                       control={control}
                       defaultValue=""
+                      rules={{
+                        required: 'First name is required',
+                        minLength: {
+                          value: 2,
+                          message: 'First name must be at least 2 characters',
+                        },
+                      }}
                       render={({ field }) => (
                         <input
                           {...field}
@@ -76,21 +102,15 @@ const SignUp: React.FC = () => {
                         />
                       )}
                     />
-                    <span className="absolute right-4 top-4">
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* SVG path for the icon */}
-                      </svg>
-                    </span>
+                    {errors.FirstName && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.FirstName.message)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/* Last Name */}
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Last name
@@ -100,6 +120,13 @@ const SignUp: React.FC = () => {
                       name="LastName"
                       control={control}
                       defaultValue=""
+                      rules={{
+                        required: 'Last name is required',
+                        minLength: {
+                          value: 2,
+                          message: 'Last name must be at least 2 characters',
+                        },
+                      }}
                       render={({ field }) => (
                         <input
                           {...field}
@@ -109,21 +136,15 @@ const SignUp: React.FC = () => {
                         />
                       )}
                     />
-                    <span className="absolute right-4 top-4">
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* SVG path for the icon */}
-                      </svg>
-                    </span>
+                    {errors.LastName && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.LastName.message)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/* Email */}
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Email
@@ -133,6 +154,14 @@ const SignUp: React.FC = () => {
                       name="Email"
                       control={control}
                       defaultValue=""
+                      rules={{
+                        required: 'Email is required',
+                        pattern: {
+                          value:
+                            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                          message: 'Invalid email format',
+                        },
+                      }}
                       render={({ field }) => (
                         <input
                           {...field}
@@ -142,21 +171,15 @@ const SignUp: React.FC = () => {
                         />
                       )}
                     />
-                    <span className="absolute right-4 top-4">
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* SVG path for the icon */}
-                      </svg>
-                    </span>
+                    {errors.Email && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.Email.message)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/*Username */}
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Username
@@ -166,6 +189,13 @@ const SignUp: React.FC = () => {
                       name="UserName"
                       control={control}
                       defaultValue=""
+                      rules={{
+                        required: 'Username is required',
+                        minLength: {
+                          value: 2,
+                          message: 'Username is required',
+                        },
+                      }}
                       render={({ field }) => (
                         <input
                           {...field}
@@ -175,21 +205,15 @@ const SignUp: React.FC = () => {
                         />
                       )}
                     />
-                    <span className="absolute right-4 top-4">
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* SVG path for the icon */}
-                      </svg>
-                    </span>
+                    {errors.UserName && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.UserName.message)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/* Password */}
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Password
@@ -199,6 +223,13 @@ const SignUp: React.FC = () => {
                       name="Password"
                       control={control}
                       defaultValue=""
+                      rules={{
+                        required: 'Password is required',
+                        minLength: {
+                          value: 8,
+                          message: 'Password must have at least 8 characters',
+                        },
+                      }}
                       render={({ field }) => (
                         <input
                           {...field}
@@ -208,25 +239,25 @@ const SignUp: React.FC = () => {
                         />
                       )}
                     />
-                    <span className="absolute right-4 top-4">
-                      <svg
-                        className="fill-current"
-                        width="22"
-                        height="22"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* SVG path for the icon */}
-                      </svg>
-                    </span>
+                    {errors.Password && (
+                      <p className="text-red-500 text-sm">
+                        {String(errors.Password.message)}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/* Profile Picture */}
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Profile Picture
                   </label>
+                  {errors.ProfilePicture && (
+                    <p className="text-red-500 text-sm">
+                      {String(errors.ProfilePicture.message)}
+                    </p>
+                  )}
+
                   <input
                     id="ProfilePicture"
                     name="ProfilePicture"

@@ -106,8 +106,8 @@ namespace backend.Services.Follower
                     throw new Exception("User not found.");
                 }
 
-                currentUser.Followers.Remove(userToRemove);
-                userToRemove.FollowedUsers.Remove(currentUser);
+                currentUser.Followers.Remove(userToRemove!);
+                userToRemove!.FollowedUsers.Remove(currentUser);
 
            
                 await _context.SaveChangesAsync();

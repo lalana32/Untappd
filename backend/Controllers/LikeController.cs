@@ -29,25 +29,25 @@ namespace backend.Controllers
        
        
 
-[HttpPost("toggle-like")]
+        [HttpPost("toggle-like")]
 
-public async Task<IActionResult> ToggleLike([FromBody] Like like)
-{
-    if (string.IsNullOrEmpty(like.UserId))
-    {
-        return Unauthorized("User is not authenticated");
-    }
+        public async Task<IActionResult> ToggleLike([FromBody] Like like)
+        {
+            if (string.IsNullOrEmpty(like.UserId))
+            {
+                return Unauthorized("User is not authenticated");
+            }
 
-    try
-    {
-        var isLiked = await _likeService.ToggleLike(like.CheckInId, like.UserId);
-        return Ok(isLiked);
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, ex.Message);
-    }
-}
+            try
+            {
+                var isLiked = await _likeService.ToggleLike(like.CheckInId, like.UserId);
+                return Ok(isLiked);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
        
         [HttpGet("{checkInId}/isLiked")]

@@ -14,7 +14,6 @@ namespace backend
     {
          public MapperProfile()
         {
-            // Mapiranje između CheckIn i DTO
             CreateMap<CheckIn, GetCheckInDTO>();
         
             CreateMap<CreateCheckInDTO, CheckIn>();

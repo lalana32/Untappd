@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
@@ -6,17 +6,39 @@ import { useDispatch } from 'react-redux';
 import { userLogin } from '../../slices/authSlice';
 import { AppDispatch } from '../../configureStore';
 import BeerGif from '../../images/beer.gif';
+import { User } from '../../models/user';
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({ mode: 'onTouched' });
   const dispatch = useDispatch<AppDispatch>();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const logInSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
-    const response = await dispatch(userLogin(data));
-    console.log(response);
-    navigate('/beers');
+    setErrorMessage(null); // Očisti prethodnu grešku
+
+    try {
+      const response = await dispatch(userLogin(data)); // Dispatch za login
+      console.log('Odgovor:', response);
+
+      // Proveriti tip odgovora
+      if (response.type === 'auth/login/fulfilled') {
+        // Uspešan login (tip je 'fulfilled')
+
+        // Ako postoji token, logovanje je uspešno
+        setErrorMessage(null); // Očisti grešku
+        navigate('/beers'); // Navigacija nakon uspešnog logovanja
+      } else {
+        const error = response.payload; // 'payload' sada može biti string ili UserLoginResponse
+        setErrorMessage(error as string);
+        console.log('Greška pri logovanju:', errorMessage);
+      }
+    } catch (error) {
+      console.log('Greška pri slanju zahteva:', error);
+      setErrorMessage('Došlo je do greške prilikom logovanja');
+    }
   };
+
   return (
     <>
       <Breadcrumb pageName="Sign In" />
@@ -33,6 +55,10 @@ const SignIn: React.FC = () => {
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Sign In to Untappd
               </h2>
+
+              {errorMessage && (
+                <div className="mb-4 text-red-500 text-sm">{errorMessage}</div>
+              )}
 
               <form onSubmit={handleSubmit(logInSubmit)}>
                 <div className="mb-4">

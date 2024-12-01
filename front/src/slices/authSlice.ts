@@ -23,7 +23,9 @@ export const userLogin = createAsyncThunk<User, FieldValues>(
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Login failed';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );

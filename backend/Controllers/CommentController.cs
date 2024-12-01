@@ -16,14 +16,12 @@ namespace backend.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
-
-        // Konstruktorski metod za injektovanje servisa
         public CommentController(ICommentService commentService)
         {
             _commentService = commentService;
         }
 
-        // Dodavanje komentara
+
         [HttpPost("addComment")]
         public async Task<ActionResult<Comment>> AddComment(AddCommentDTO dto)
         {

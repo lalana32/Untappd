@@ -31,7 +31,7 @@ namespace backend.Services.Comments
 
     var notification = new Notification
     {
-        UserId = userToNotify.Id,
+        UserId = userToNotify!.Id,
         Message = $"{userCommented!.UserName} commented your post", 
         IsRead = false, 
         CreatedAt = DateTime.UtcNow,
@@ -46,7 +46,7 @@ namespace backend.Services.Comments
     var comment = new Comment
     {
         CheckInId = dto.CheckInId,
-        UserId = dto.UserId,  // Koristi prosleđeni userId
+        UserId = dto.UserId, 
         Text = dto.Text,
         CreatedAt = DateTime.UtcNow
     };

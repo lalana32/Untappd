@@ -35,27 +35,27 @@ namespace backend.Services
 
             if (checkIn == null)
             {
-                return null; // Handle not found case
+                return null!; // Handle not found case
             }
 
-            var isLikedByCurrentUser = checkIn.Likes.Any(like => like.UserId == currentUserId);
+            var isLikedByCurrentUser = checkIn.Likes!.Any(like => like.UserId == currentUserId);
 
             return new GetCheckInDTO
             {
                 Id = checkIn.Id,
                 BeerId = checkIn.BeerId,
-                BeerName = checkIn.Beer.Name,
+                BeerName = checkIn.Beer!.Name,
                 Rating = checkIn.Rating,
                 Notes = checkIn.Notes,
                 Date = checkIn.Date,
                 UserId = checkIn.UserId,
-                FirstName = checkIn.User.FirstName,
+                FirstName = checkIn.User!.FirstName,
                 LastName = checkIn.User.LastName,
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
                 Likes = checkIn.Likes,
                 IsLikedByCurrentUser = isLikedByCurrentUser,
-                Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+                Comments = checkIn.Comments!.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
             Text = comment.Text,
             UserId = comment.UserId,
@@ -72,8 +72,8 @@ namespace backend.Services
             var checkIns = await _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
-                .Include(c => c.Likes)
-                .Include(c => c.Comments)
+                .Include(c => c.Likes!)
+                .Include(c => c.Comments!)
                     .ThenInclude(comment => comment.User)
                 .ToListAsync();
 
@@ -81,17 +81,17 @@ namespace backend.Services
             {
                 Id = checkIn.Id,
                 BeerId = checkIn.BeerId,
-                BeerName = checkIn.Beer.Name,
+                BeerName = checkIn.Beer!.Name,
                 Rating = checkIn.Rating,
                 Notes = checkIn.Notes,
                 Date = checkIn.Date,
                 UserId = checkIn.UserId,
-                FirstName = checkIn.User.FirstName,
+                FirstName = checkIn.User!.FirstName,
                 LastName = checkIn.User.LastName,
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
                 Likes = checkIn.Likes,
-                Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+                Comments = checkIn.Comments!.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
             Id = comment.Id,
             Text = comment.Text,
@@ -104,20 +104,20 @@ namespace backend.Services
         }
 
 
-        public async Task<List<GetCheckInDTO>> GetCheckInsByUserId(string userId, string sort = "date_desc", string country = null)
+        public async Task<List<GetCheckInDTO>> GetCheckInsByUserId(string userId, string sort = "date_desc", string country = null!)
         {
             IQueryable<CheckIn> query =  _context.CheckIns
                 .Include(c => c.Beer)
                 .Include(c => c.User)
-                .Include(c => c.Likes)
-                .Include(c => c.Comments)
+                .Include(c => c.Likes!)
+                .Include(c => c.Comments!)
                     .ThenInclude(comment => comment.User)
                 .Where(c => c.UserId == userId)
                 .OrderByDescending(c => c.Date);
 
             if (!string.IsNullOrEmpty(country))
             {
-                query = query.Where(c => c.Beer.Country == country);
+                query = query.Where(c => c.Beer!.Country == country);
             }
               
             query = sort switch
@@ -137,25 +137,25 @@ namespace backend.Services
             {
                 Id = checkIn.Id,
                 BeerId = checkIn.BeerId,
-                BeerName = checkIn.Beer.Name,
+                BeerName = checkIn.Beer!.Name,
                 Rating = checkIn.Rating,
                 Notes = checkIn.Notes,
                 Date = checkIn.Date,
                 UserId = checkIn.UserId,
-                FirstName = checkIn.User.FirstName,
+                FirstName = checkIn.User!.FirstName,
                 LastName = checkIn.User.LastName,
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
                 Country = checkIn.Beer.Country,
                 Likes = checkIn.Likes,
-                 Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+                 Comments = checkIn.Comments!.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
             Id = comment.Id,
             Text = comment.Text,
             UserId = comment.UserId,
             CreatedAt = comment.CreatedAt,
             CheckInId = comment.CheckInId,
-            Username = comment.User.UserName!,
+            Username = comment.User!.UserName,
         }).ToList(),
             }).ToList();
         }
@@ -181,10 +181,10 @@ namespace backend.Services
             var checkIns = await _context.CheckIns
             .Include(c => c.Beer)
             .Include(c => c.User)
-            .Include(c => c.Likes)
-            .Include(c => c.Comments)
+            .Include(c => c.Likes!)
+            .Include(c => c.Comments!)
                 .ThenInclude(comment => comment.User)
-            .Where(c => followedUserIds.Contains(c.UserId)) 
+            .Where(c => followedUserIds.Contains(c.UserId!)) 
             .OrderByDescending(c => c.Date)
             .ToListAsync();
 
@@ -192,25 +192,25 @@ namespace backend.Services
             {
                 Id = checkIn.Id,
                 BeerId = checkIn.BeerId,
-                BeerName = checkIn.Beer.Name,
+                BeerName = checkIn.Beer!.Name,
                 Rating = checkIn.Rating,
                 Notes = checkIn.Notes,
                 Date = checkIn.Date,
                 UserId = checkIn.UserId,
-                FirstName = checkIn.User.FirstName,
+                FirstName = checkIn.User!.FirstName,
                 LastName = checkIn.User.LastName,
                 BeerImageUrl = checkIn.Beer.ImageUrl,
                 Brewery = checkIn.Beer.Brewery,
                 Likes = checkIn.Likes,
-                IsLikedByCurrentUser = checkIn.Likes.Any(like => like.UserId == currentUserId),
-               Comments = checkIn.Comments.Where(comment => comment != null).Select(comment => new GetCommentDTO
+                IsLikedByCurrentUser = checkIn.Likes!.Any(like => like.UserId == currentUserId),
+               Comments = checkIn.Comments!.Where(comment => comment != null).Select(comment => new GetCommentDTO
         {
             Id = comment.Id,
             Text = comment.Text,
             UserId = comment.UserId,
             CreatedAt = comment.CreatedAt,
             CheckInId = comment.CheckInId,
-            Username = comment.User.UserName!
+            Username = comment.User!.UserName
         }).ToList(),
             }).ToList();
         }

@@ -29,14 +29,13 @@ const Table = () => {
         const checkIns = response as CheckInDTO[];
         setCheckIns(checkIns);
 
-        // Izvuci sve države iz podataka (samo jednom)
         if (allCountries.length === 0) {
           const countries = checkIns.map(
             (checkIn: CheckInDTO) => checkIn.country,
           );
           const uniqueCountries = [...new Set(countries)];
-          setAllCountries(uniqueCountries); // Svi dostupni
-          setCountries(uniqueCountries); // Inicijalno stanje za dropdown
+          setAllCountries(uniqueCountries);
+          setCountries(uniqueCountries);
         }
       } catch (error) {
         console.error('Error fetching check-ins:', error);
@@ -51,7 +50,7 @@ const Table = () => {
   const handleFilterChange = (selected: string) => {
     setSelectedCountry(selected);
     if (selected === '') {
-      setCountries(allCountries); // Vrati sve opcije kada je prazno
+      setCountries(allCountries);
     }
   };
 

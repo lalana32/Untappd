@@ -8,13 +8,12 @@ import CheckInPost from '../../components/CheckInPost';
 const Feed: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
   const [checkIns, setCheckIns] = useState<CheckInDTO[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCheckIns = async () => {
       if (!user) return;
       try {
-        setLoading(true);
         const response = await agent.CheckIns.getCheckInFeed(
           user?.id!,
           user?.token,
@@ -40,7 +39,7 @@ const Feed: React.FC = () => {
                 ...item,
                 isLikedByCurrentUser: !item.isLikedByCurrentUser,
                 likes: item.isLikedByCurrentUser
-                  ? item.likes.filter((like) => like.userId !== user?.id!) // Ukloni "like"
+                  ? item.likes.filter((like) => like.userId !== user?.id!)
                   : [
                       ...item.likes,
                       {
@@ -61,7 +60,7 @@ const Feed: React.FC = () => {
 
   if (!user) return <UserNotLoggedIn />;
 
-  if (user && checkIns.length === 0)
+  if (checkIns.length === 0 && !loading)
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="text-center">

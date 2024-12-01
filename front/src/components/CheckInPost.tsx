@@ -19,7 +19,7 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setText(event.target.value); // Ažurirajte vrednost state-a
+    setText(event.target.value);
   };
 
   const addComment = async (
@@ -28,10 +28,9 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
     userId: string,
   ) => {
     try {
-      // Poziv API-a
       const response = await agent.Comments.addComment(checkInId, text, userId);
       console.log(response);
-      // Ažuriranje lokalnog niza komentara
+
       const newComment: CommentDTO = {
         id: response.id,
         text: response.text,

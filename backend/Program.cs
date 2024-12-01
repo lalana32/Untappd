@@ -36,13 +36,11 @@ builder.Services.AddHttpContextAccessor();
 
 
 
-// In Program.cs or Startup.cs
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    // Example: Ignore reference loops (similar to what Newtonsoft.Json does)
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 
-    // Optional: Pretty-print JSON responses
     options.JsonSerializerOptions.WriteIndented = true;
 });
 
@@ -88,14 +86,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]!)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
     });
 
-// Registracija TokenService-a
 builder.Services.AddScoped<TokenService>();
+
 
 
 builder.Services.AddCors(options =>
@@ -104,40 +102,40 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyMethod()
               .AllowAnyHeader()
-              .WithOrigins("http://localhost:5173") // Add your frontend origin here
-              .AllowCredentials(); // Allow credentials if needed
+              .WithOrigins("http://localhost:5173")
+              .AllowCredentials(); 
     });
 });
 
 var app = builder.Build();
 
-// Middleware za HTTPS redirekciju
+
 app.UseHttpsRedirection();
 
-// Swagger i Swagger UI (samo u razvojnom okruženju)
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Omogućite CORS politiku
+
 app.UseCors("CorsPolicy");
 
-// Dodajte routing
 app.UseRouting();
 
-// Uverite se da je Authentication middleware postavljen pre Authorization
-app.UseAuthentication();  // Autentifikacija
-app.UseAuthorization();   // Autorizacija
+app.UseAuthentication();  
+app.UseAuthorization();  
 
-// Mapiranje kontrolera
 app.MapControllers();
 
-// Omogućite statičke fajlove
+
+
+
+
 app.UseStaticFiles();
 
-// Kreirajte opseg za migracije i inicijalizaciju baze
+
 var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<DataContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
@@ -154,5 +152,4 @@ var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     }
 }
 
-// Pokrenite aplikaciju
 app.Run();

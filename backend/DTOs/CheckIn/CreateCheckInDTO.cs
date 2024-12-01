@@ -10,7 +10,7 @@ namespace backend.DTOs.CheckIn
         public string? Notes { get; set; }
 
         public DateTime Date { get; set; } = DateTime.UtcNow;
-        public string UserId {  get; set; }
+        public string? UserId {  get; set; }
 
     }
 }

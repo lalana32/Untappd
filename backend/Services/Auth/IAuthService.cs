@@ -8,6 +8,7 @@ namespace backend.Services.Auth
         Task<UserDTO> Register(RegisterUserDTO registerDto);
         Task<List<UserDTO>> GetAllUsers();
         Task<UserDTO> GetUserById(string id);
+        Task<UserDTO> GetCurrentUser();
         
     }
 }

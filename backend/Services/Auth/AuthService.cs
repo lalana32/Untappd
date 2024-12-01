@@ -30,7 +30,7 @@ namespace backend.Services
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
             {
-                throw new UnauthorizedAccessException("Invalid credentials");
+                throw new UnauthorizedAccessException("Invalid username or password");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -88,7 +88,7 @@ namespace backend.Services
 
             var result = await _userManager.CreateAsync(newUser, registerDto.Password);
 
-            if (!result.Succeeded) return null;
+            if (!result.Succeeded) return null!;
 
             await _userManager.AddToRoleAsync(newUser, "Member");
 
@@ -106,18 +106,17 @@ namespace backend.Services
 
             }
 
-            return null;
+            return null!;
             
         }
 
-       public async Task<List<UserDTO>> GetAllUsers()
-       {
-           var users =  _userManager.Users.ToList();
+        public Task<List<UserDTO>> GetAllUsers()
+        {
+            var users = _userManager.Users.ToList();
+            var mappedUsers = users.Select(user => _mapper.Map<UserDTO>(user)).ToList();
+            return Task.FromResult(mappedUsers);
+        }
 
-           var mappedUsers = users.Select(user => _mapper.Map<UserDTO>(user)).ToList();
-
-           return mappedUsers;
-       }
 
 
         public async Task<UserDTO> GetUserById(string id)
@@ -136,9 +135,35 @@ namespace backend.Services
             return userDto;
         }
 
-        
 
 
+        public async Task<UserDTO> GetCurrentUser()
+        {
+            
+            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new UnauthorizedAccessException("Token is missing");
+            }
+
+            var userId = _tokenService.GetUserIdFromToken(token); 
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("Invalid token");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+
+            var userDto = _mapper.Map<UserDTO>(user);
+            return userDto;
+        }
 
     }
 }

@@ -23,7 +23,6 @@ const request = {
   },
 };
 
-// Beers API
 const Beers = {
   getAllBeers: (token?: string) => request.get('Beers', token),
   getBeerById: (id: number, token?: string) =>
@@ -35,7 +34,6 @@ const Beers = {
     request.delete(`Beers/${id}`, token),
 };
 
-// Auth API
 const Auth = {
   login: (values: any, token?: string) =>
     request.post('Auth/login', values, token),
@@ -46,7 +44,6 @@ const Auth = {
     request.get(`Auth/getUserById/${id}`, token),
 };
 
-// CheckIns API
 const CheckIns = {
   getAllCheckIns: (token?: string) => request.get('CheckIn', token),
   getCheckInById: (id: number, token?: string) =>
@@ -73,7 +70,6 @@ const CheckIns = {
     request.delete(`CheckIn/${id}`, token),
 };
 
-// Follower API
 const Follower = {
   getFollowers: (userId: string, token?: string) =>
     request.get(`Follower/followers/${userId}`, token),
@@ -105,7 +101,6 @@ const Follower = {
     ),
 };
 
-// Notifications API
 const Notifications = {
   getUserNotifications: (userId: string, token?: string) =>
     request.get(`Notification/${userId}`, token),
@@ -115,7 +110,6 @@ const Notifications = {
     request.put(`Notification/${userId}`, userId, token),
 };
 
-// Likes API
 const Likes = {
   getLikesByCheckInId: (checkInId: number, token?: string) =>
     request.get(`Like/${checkInId}/getLikes`, token),

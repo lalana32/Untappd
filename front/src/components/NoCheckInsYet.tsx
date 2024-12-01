@@ -6,11 +6,7 @@ const NoCheckInsYet = () => {
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-boxdark">
       <div className="flex flex-col items-center space-y-4">
-        <img
-          src={BeerBotle} // Ovde stavite putanju do slike koja simbolizuje praznu listu
-          alt="No Check-ins"
-          className="w-60 h-60"
-        />
+        <img src={BeerBotle} alt="No Check-ins" className="w-60 h-60" />
         <h2 className="text-2xl font-semibold text-black dark:text-white">
           No Check-ins Yet
         </h2>

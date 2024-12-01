@@ -10,17 +10,17 @@ namespace backend.Models
        
         public int Id { get; set; } 
 
-        public string Text { get; set; } 
+        public string? Text { get; set; } 
       
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int CheckInId { get; set; } 
 
-        public CheckIn CheckIn { get; set; } 
+        public CheckIn? CheckIn { get; set; } 
 
-        public string UserId { get; set; } 
+        public string? UserId { get; set; } 
 
-        public User User { get; set; } 
+        public User? User { get; set; } 
 
     }
 }
