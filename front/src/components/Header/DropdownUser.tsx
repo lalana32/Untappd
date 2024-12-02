@@ -41,13 +41,16 @@ const DropdownUser = () => {
           </span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <img
-            src={user.profilePictureUrl}
-            className="object-cover h-full w-full rounded-full"
-            alt="User"
-          />
-        </span>
+        <img
+          src={user.profilePictureUrl || '/default-avatar.png'}
+          alt="Profile"
+          style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            objectFit: 'cover',
+          }}
+        />
 
         <svg
           className="hidden fill-current sm:block"

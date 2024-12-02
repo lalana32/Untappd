@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
@@ -8,7 +7,6 @@ import SignUp from './pages/Authentication/SignUp';
 import Chart from './pages/Chart';
 import Profile from './pages/Profile';
 import Tables from './pages/Tables';
-
 import DefaultLayout from './layout/DefaultLayout';
 import BeersList from './pages/BeersList';
 import CheckInPage from './pages/CheckInPage';

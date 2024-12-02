@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { userLogin } from '../../slices/authSlice';
 import { AppDispatch } from '../../configureStore';
 import BeerGif from '../../images/beer.gif';
-import { User } from '../../models/user';
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -15,21 +14,17 @@ const SignIn: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const logInSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
-    setErrorMessage(null); // Očisti prethodnu grešku
+    setErrorMessage(null);
 
     try {
-      const response = await dispatch(userLogin(data)); // Dispatch za login
+      const response = await dispatch(userLogin(data));
       console.log('Odgovor:', response);
 
-      // Proveriti tip odgovora
       if (response.type === 'auth/login/fulfilled') {
-        // Uspešan login (tip je 'fulfilled')
-
-        // Ako postoji token, logovanje je uspešno
-        setErrorMessage(null); // Očisti grešku
-        navigate('/beers'); // Navigacija nakon uspešnog logovanja
+        setErrorMessage(null);
+        navigate('/beers');
       } else {
-        const error = response.payload; // 'payload' sada može biti string ili UserLoginResponse
+        const error = response.payload;
         setErrorMessage(error as string);
         console.log('Greška pri logovanju:', errorMessage);
       }

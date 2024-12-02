@@ -2,14 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAppSelector } from '../../configureStore';
 import agent from '../../data/agent';
 import { CheckInDTO } from '../../models/checkIn';
-import BeerBotle from '../../../public/photos/beer-bottle.png';
-import { useNavigate } from 'react-router-dom';
 import Loader from '../../common/Loader';
 import UserNotLoggedIn from '../UserNotLoggedIn';
 import NoCheckInsYet from '../NoCheckInsYet';
 
 const Table = () => {
-  const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
   const userId = user?.id;
   const [checkIns, setCheckIns] = useState<CheckInDTO[]>([]);

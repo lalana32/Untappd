@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\images\\08564c53-30d1-4826-875e-894b8e5bd0a7.jpg"
     },
     {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\09173dcf-c49f-41ec-9a3f-c8ef7a5a5e2b.jpeg",
+      "PackagePath": "staticwebassets\\images\\09173dcf-c49f-41ec-9a3f-c8ef7a5a5e2b.jpeg"
+    },
+    {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\14fb1299-3972-451f-81fe-50e4f771784b.jpeg",
       "PackagePath": "staticwebassets\\images\\14fb1299-3972-451f-81fe-50e4f771784b.jpeg"
     },
@@ -21,12 +25,20 @@
       "PackagePath": "staticwebassets\\images\\2e35c445-318e-4215-9042-277e3919cb6a.jpeg"
     },
     {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\2f4b7c38-a626-44fc-a504-91a1256adf95.jpg",
+      "PackagePath": "staticwebassets\\images\\2f4b7c38-a626-44fc-a504-91a1256adf95.jpg"
+    },
+    {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\3051b424-34e2-44e4-803d-44cbb8cfcdab.jpg",
       "PackagePath": "staticwebassets\\images\\3051b424-34e2-44e4-803d-44cbb8cfcdab.jpg"
     },
     {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\36055c6d-4dd5-49b6-ab3a-693ae0709150.jpg",
       "PackagePath": "staticwebassets\\images\\36055c6d-4dd5-49b6-ab3a-693ae0709150.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\400b0f68-e0ce-4627-965d-fce8a7994bb9.png",
+      "PackagePath": "staticwebassets\\images\\400b0f68-e0ce-4627-965d-fce8a7994bb9.png"
     },
     {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\45a441be-6d9c-4ebb-8e27-a4eb159a5c85.jpg",
@@ -41,12 +53,20 @@
       "PackagePath": "staticwebassets\\images\\5b8fefab-29bf-4fe7-b319-763e047143b4.jpg"
     },
     {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\6d77884b-3fd0-47f8-b583-992c97762c82.jpg",
+      "PackagePath": "staticwebassets\\images\\6d77884b-3fd0-47f8-b583-992c97762c82.jpg"
+    },
+    {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\725e5ed8-8565-44d2-b25a-3ee7e8643ba9.jpg",
       "PackagePath": "staticwebassets\\images\\725e5ed8-8565-44d2-b25a-3ee7e8643ba9.jpg"
     },
     {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\a1890133-575a-422a-b92f-f844ebf3108e.jpeg",
       "PackagePath": "staticwebassets\\images\\a1890133-575a-422a-b92f-f844ebf3108e.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\b18c4121-a411-4715-8e9e-a3e6fb636d17.jpeg",
+      "PackagePath": "staticwebassets\\images\\b18c4121-a411-4715-8e9e-a3e6fb636d17.jpeg"
     },
     {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\b24549d5-17be-4978-8572-659fd172ce68.jpg",
@@ -109,6 +129,10 @@
       "PackagePath": "staticwebassets\\images\\f1bef1d4-a375-43b6-b20e-f315492dfa6d.jpeg"
     },
     {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\f1f5dbc0-7aaf-4da7-ac0b-439699bfe889.jpeg",
+      "PackagePath": "staticwebassets\\images\\f1f5dbc0-7aaf-4da7-ac0b-439699bfe889.jpeg"
+    },
+    {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\f2802860-7b5d-4648-b172-dabafef4acfe.jpg",
       "PackagePath": "staticwebassets\\images\\f2802860-7b5d-4648-b172-dabafef4acfe.jpg"
     },
@@ -119,6 +143,10 @@
     {
       "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\fa04e4a5-0cdf-4ef4-8e3c-f60b2943d28f.jpeg",
       "PackagePath": "staticwebassets\\images\\fa04e4a5-0cdf-4ef4-8e3c-f60b2943d28f.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Korisnik\\Desktop\\Untappd\\backend\\wwwroot\\images\\ff90fe47-96a1-4a1a-8d10-802184352a6f.jpeg",
+      "PackagePath": "staticwebassets\\images\\ff90fe47-96a1-4a1a-8d10-802184352a6f.jpeg"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.backend.Microsoft.AspNetCore.StaticWebAssets.props",

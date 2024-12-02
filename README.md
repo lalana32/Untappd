@@ -1,6 +1,6 @@
 # Untappd
 
-Untappd is an application for beer enthusiasts that allows users to browse, rate, and discover new beers.
+**Untappd** is an application for beer enthusiasts that allows users to browse, rate, and discover new beers. The application is built based on the social network **Untappd**, allowing users to share their beer experiences, follow other users, and engage through comments and likes.
 
 ## Technologies
 
@@ -16,7 +16,7 @@ Untappd is an application for beer enthusiasts that allows users to browse, rate
 
 ### Backend
 
-1. Navigate to the `API` directoy.
+1. Navigate to the `API` directory.
 2. Run the backend with the following command:
    `dotnet watch run`
 
@@ -36,11 +36,15 @@ User Registration: When you first run the application, you will need to register
 
 ### Features
 
-Follow Users: Users can follow other users to keep track of their activities.
-Notifications: Users receive notifications about the activities of the users they follow, including likes and comments on their posts.
-Check In Beers: Users can check in new beers and share their experiences.
-Rate Beers: Users can rate beers and provide feedback on their experiences.
-View Statistics: Users can view statistics related to their beer check-ins, ratings, and user interactions.
-Feed of Check-Ins: Users can view a feed of check-ins from the users they follow, including likes and comments.
-Search Users: Users can search for other users within the application.
-Like and Comment on Posts: Users can like and comment on check-ins shared by others to engage with their content.
+- **Follow Users:** Users can follow other users to keep track of their activities.
+- **Notifications:** Users receive notifications about the activities of the users they follow, including likes and comments on their posts.
+- **Check In Beers:** Users can check in new beers and share their experiences.
+- **Rate Beers:** Users can rate beers and provide feedback on their experiences.
+- **View Statistics:** Users can view statistics related to their beer check-ins, ratings, and user interactions.
+- **Feed of Check-Ins:** Users can view a feed of check-ins from the users they follow, including likes and comments.
+- **Search Users:** Users can search for other users within the application.
+- **Like and Comment on Posts:** Users can like and comment on check-ins shared by others to engage with their content.
+
+## Profile Images for Testing
+
+In the **"profile images"** folder, you will find a set of profile pictures that can be used for testing purposes during the development process. These images are intended to be assigned to users during registration or other user-related activities.

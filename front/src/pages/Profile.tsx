@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Cover from '../../public/photos/cover-photo.jpg';
 import { useAppSelector } from '../configureStore';
 import { useEffect, useRef, useState } from 'react';
-import { CheckIn, CheckInDTO } from '../models/checkIn';
+import { CheckInDTO } from '../models/checkIn';
 import agent from '../data/agent';
 import { Follower } from '../models/follower';
 import UserNotLoggedIn from '../components/UserNotLoggedIn';

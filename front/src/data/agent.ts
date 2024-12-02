@@ -114,11 +114,11 @@ const Likes = {
   getLikesByCheckInId: (checkInId: number, token?: string) =>
     request.get(`Like/${checkInId}/getLikes`, token),
   toggleLike: (checkinId: number, userId: string, token?: string) =>
-    request.post(`Like/toggle-like`, { checkinId, userId }, token), // Koristi query param
+    request.post(`Like/toggle-like`, { checkinId, userId }, token),
   unlike: (checkInId: number, userId: string, token?: string) =>
-    request.post(`Like/${checkInId}/unlike?userId=${userId}`, {}, token), // Koristi query param
+    request.post(`Like/${checkInId}/unlike?userId=${userId}`, {}, token),
   isLiked: (checkInId: number, userId: string, token?: string) =>
-    request.get(`Like/${checkInId}/isLiked?userId=${userId}`, token), // Koristi query param
+    request.get(`Like/${checkInId}/isLiked?userId=${userId}`, token),
 };
 
 const Comments = {

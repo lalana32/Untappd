@@ -68,7 +68,7 @@ const CheckInPost = ({ toggleLike, checkIn }: CheckInPostProps) => {
   return (
     <div
       key={checkIn.id}
-      className="w-full max-w-3xl rounded-lg shadow-lg overflow-hidden border border-gray-300 bg-white dark:bg-boxdark transform transition duration-500 hover:scale-105 hover:shadow-2xl"
+      className="w-full max-w-2xl h-auto rounded-lg shadow-lg overflow-hidden border border-gray-300 bg-white dark:bg-boxdark"
     >
       <div className="px-8 py-6 bg-black duration-300 ease-linear dark:bg-boxdark text-white">
         <h2 className="text-4xl font-extrabold tracking-tight">
