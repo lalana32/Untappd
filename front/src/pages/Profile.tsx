@@ -129,6 +129,28 @@ const Profile = () => {
     setIsFollowedUsersModalOpen(false);
   };
 
+  const handleRemoveFollower = async (userId: string, followerId: string) => {
+    try {
+      await agent.Follower.removeFollower(userId, followerId);
+      setFollowers((prevFollowers) =>
+        prevFollowers.filter((follower) => follower.id !== followerId),
+      );
+    } catch (error) {
+      console.error('Error removing follower:', error);
+    }
+  };
+
+  const handleUnfollowUser = async (userId: string, followedUserId: string) => {
+    try {
+      await agent.Follower.unfollowUser(userId, followedUserId);
+      setFollowedUsers((prevFollowed) =>
+        prevFollowed.filter((prevFoll) => prevFoll.id !== followedUserId),
+      );
+    } catch (error) {
+      console.error('Error unfollowing user:', error);
+    }
+  };
+
   if (!user) return <UserNotLoggedIn />;
 
   if (!loading)
@@ -218,14 +240,9 @@ const Profile = () => {
                         </div>
                       </div>
                       <button
-                        onClick={async () => {
-                          await agent.Follower.removeFollower(
-                            user?.id,
-                            follower.id,
-                          );
-                          alert('Follower removed successfully');
-                          window.location.reload();
-                        }}
+                        onClick={async () =>
+                          handleRemoveFollower(user.id, follower.id)
+                        }
                         className="text-red-500 hover:text-red-700"
                       >
                         Remove
@@ -269,12 +286,7 @@ const Profile = () => {
                       </div>
                       <button
                         onClick={async () => {
-                          await agent.Follower.unfollowUser(
-                            user?.id,
-                            followedUser.id,
-                          );
-                          alert('User unfollowed successfully');
-                          window.location.reload();
+                          handleUnfollowUser(user.id, followedUser.id);
                         }}
                         className="text-red-500 hover:text-red-700"
                       >
